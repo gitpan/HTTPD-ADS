@@ -195,7 +195,7 @@ package HTTPD::ADS::proxy_tested;
 use base 'HTTPD::ADS::DBI';
 HTTPD::ADS::proxy_tested->set_up_table('proxy_tested');
 
-package HTTP::ADS::notified;
+package HTTPD::ADS::notified;
 use base 'HTTPD::ADS::DBI';
 #HTTPD::ADS::notified->set_up_table('notified');
 __PACKAGE__->table('notified');

@@ -1,6 +1,6 @@
 --- #YAML:1.0
 name: HTTPD-ADS
-version: 0.3
+version: 0.31
 license: gpl
 distribution_type: module
 requires:
@@ -20,12 +20,9 @@ recommends: {}
 build_requires: {}
 conflicts: {}
 provides:
-  HTTP::ADS::notified:
-    file: lib/HTTPD/ADS/DBI.pm
-    version: 0.2
   HTTPD::ADS:
     file: lib/HTTPD/ADS.pm
-    version: 0.3
+    version: 0.31
   HTTPD::ADS::AbuseNotify:
     file: lib/HTTPD/ADS/AbuseNotify.pm
     version: 0.1
@@ -54,6 +51,9 @@ provides:
     file: lib/HTTPD/ADS/DBI.pm
     version: 0.2
   HTTPD::ADS::notice_templates:
+    file: lib/HTTPD/ADS/DBI.pm
+    version: 0.2
+  HTTPD::ADS::notified:
     file: lib/HTTPD/ADS/DBI.pm
     version: 0.2
   HTTPD::ADS::proxy_tested:
