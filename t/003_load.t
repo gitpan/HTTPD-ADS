@@ -4,9 +4,9 @@
 
 use Test::More tests => 2;
 
-BEGIN { use_ok( 'WWW::APS::DBI' ); }
+BEGIN { use_ok( 'HTTPD::ADS::DBI' ); }
 
-my $object = WWW::APS::DBI->new ();
-isa_ok ($object, 'WWW::APS::DBI');
+my $object = HTTPD::ADS::DBI->new ();
+isa_ok ($object, 'HTTPD::ADS::DBI');
 
 

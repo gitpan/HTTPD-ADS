@@ -2,13 +2,14 @@ package HTTPD::ADS;
 use strict;
 use warnings;
 use vars qw ($VERSION @ISA );
-$VERSION     = 0.2;
+$VERSION     = 0.3;
 use base qw/ Class::Constructor Class::Accessor /;
 use HTTPD::ADS::DBI;
+use HTTPD::ADS::Times;#time-related subroutines
 use CLASS;
 use CGI::Carp qw(cluck  carpout);
 use IO::Socket::UNIX;
-use Date::Calc qw(Normalize_DHMS Add_Delta_YMDHMS System_Clock Today_and_Now Gmtime );
+
 
 use constant MAX_REQUEST_STRING_LENGTH =>64;
 use constant MAX_REQUEST_STRING_COLUMN => 63;
@@ -25,7 +26,7 @@ BEGIN {
 
 =head1 NAME
 
-HTTPD::ADS - Perl module for Attack Detection and Prevention System using Data Mining.
+HTTPD::ADS - Perl module for Abuse Detection and Prevention System 
 
 =head1 SYNOPSIS
 
@@ -35,7 +36,7 @@ HTTPD::ADS - Perl module for Attack Detection and Prevention System using Data M
 
 =head1 DESCRIPTION
 
-    Attack Detection System
+    Abuse Detection System
 
 
 =head1 USAGE
@@ -110,21 +111,6 @@ CLASS->mk_constructor(
 
 ################################################## subroutine header end ##
 
-sub gmttimestamp  {
-    my ($year,$month,$day,$hour,$min,$sec)= Gmtime();
-    return "$year-$month-$day $hour:$min:$sec";
-}
-
-sub pgtimewindow {
-    my $self = shift;
-    my @timestamp= Gmtime;
-    #    my ($year,$month,$day,$hour,$min,$sec,$doy,$dow,$dst)= Gmtime();
-    my $ref =  $self->normalizedIDSTimeWindowSize;
-    $ref = $$ref;
-    my ($target_year,$target_month,$target_day,$target_hour,$target_min,$target_sec) =
-	Add_Delta_YMDHMS(@timestamp[0..5], @$ref);
-    my $result = "$target_year-$target_month-$target_day $target_hour:$target_min:$target_sec";
-}
 sub _init {
     #_init sets up the db connection and prepares the SQL we'll need for insert and retrieve
     my $self = shift;
@@ -145,12 +131,7 @@ sub _init {
 	my %args=@_;
 	my ($eventrecord,$hostentry,$arg_string,$username,$request_string,$whitelist_entry);
 	my $max_request_length=64; #not max column number, which is one less 
-	#in future it may well be more optimal to keep the whitelist in
-	#memory in a Patricia Trie. Initially it is more transparent
-	#to keep it in an SQL table.  In future it may be desirable
-	# to store it in the dbms and load it all at start into a Patricia Trie.
-	#or it might be better to make a separate module containing
-	#a Whitelist class with the whitelist as a class variable.
+
 
 
 	$args{time}=$self->gmttimestamp unless defined $args{time};

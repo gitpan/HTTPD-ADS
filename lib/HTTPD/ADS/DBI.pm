@@ -4,7 +4,7 @@ use strict;
 BEGIN {
   use Exporter ();
   use vars qw ($VERSION @ISA @EXPORT @EXPORT_OK %EXPORT_TAGS);
-  $VERSION     = 0.1;
+  $VERSION     = 0.2;
   @ISA         = qw (Exporter);
   #Give a hoot don't pollute, do not export more than needed by default
   @EXPORT      = qw ();
@@ -98,20 +98,26 @@ See Also   :
 ################################################## subroutine header end ##
 package HTTPD::ADS::Hosts;
 use base 'HTTPD::ADS::DBI';
-HTTPD::ADS::Hosts->set_up_table('hosts');
+#HTTPD::ADS::Hosts->set_up_table('hosts');
+__PACKAGE__->table('hosts');
+__PACKAGE__->columns(Primary =>'ip');
+__PACKAGE__->columns(All => qw(ip score score_ts));
 
-
-package HTTPD::ADS::Arg_strings;
-use base 'HTTPD::ADS::DBI';
-HTTPD::ADS::Arg_strings->set_up_table('arg_strings');
+#package HTTPD::ADS::Arg_strings;
+#use base 'HTTPD::ADS::DBI';
+#HTTPD::ADS::Arg_strings->set_up_table('arg_strings');
 
 package HTTPD::ADS::Usernames;
 use base 'HTTPD::ADS::DBI';
-HTTPD::ADS::Usernames->set_up_table('usernames');
+#HTTPD::ADS::Usernames->set_up_table('usernames');
 use CLASS;
 use Carp;
 my %usernames_cache;
 
+CLASS->table('usernames');
+CLASS->columns(Primary =>'userid');
+CLASS->columns(All => qw (userid username));
+CLASS->sequence('userid');
 
 sub cached_find_or_create {
   my $self = shift;
@@ -134,10 +140,15 @@ sub cached_find_or_create {
 
 package HTTPD::ADS::Request_strings;
 use base 'HTTPD::ADS::DBI';
-HTTPD::ADS::Request_strings->set_up_table('request_strings');
+#HTTPD::ADS::Request_strings->set_up_table('request_strings');
 use CLASS;
 use Carp;
 my %request_strings_cache;
+
+CLASS->table('request_strings');
+CLASS->columns(Primary => 'requestid');
+CLASS->columns(All =>qw (requestid request_string));
+CLASS->sequence('requestid');
 
 
 sub cached_find_or_create  {
@@ -161,14 +172,36 @@ sub cached_find_or_create  {
 package HTTPD::ADS::Eventrecords;
 use base 'HTTPD::ADS::DBI';
 HTTPD::ADS::Eventrecords->set_up_table('eventrecords');
+
 package HTTPD::ADS::Blacklist;
 use base 'HTTPD::ADS::DBI';
 #HTTPD::ADS::Blacklist->set_up_table('blacklist');
 HTTPD::ADS::Blacklist->columns(Primary => qw /ip blocked_at/ );
 HTTPD::ADS::Blacklist->columns(Others => qw /active first_event block_reason unblocked_at unblock_reason/ );
-HTTPD::ADS::Blacklist->might_have(host => HTTPD::ADS::Hosts =>
-				  (qw / nic_handle_notified notice_ts open_proxy open_proxy_test_at freq401 last_freq_computed_at/)
-				 );
+#HTTPD::ADS::Blacklist->might_have(host => HTTPD::ADS::Hosts =>
+#				  (qw / nic_handle_notified notice_ts open_proxy open_proxy_test_at freq401 last_freq_computed_at/)				 );
+#package HTTPD::ADS::freq401;
+#use base 'HTTPD::ADS::DBI';
+#HTTPD::ADS::freq401->set_up_table('freq401');
+
+package HTTPD::ADS::notice_templates;
+use base 'HTTPD::ADS::DBI';
+#HTTPD::ADS::notice_templates->set_up_table('notice_templates');
+__PACKAGE__->table('notice_templates');
+__PACKAGE__->columns(Primary =>'notice_name');
+__PACKAGE__->columns(All => qw(notice_name template));
+
+package HTTPD::ADS::proxy_tested;
+use base 'HTTPD::ADS::DBI';
+HTTPD::ADS::proxy_tested->set_up_table('proxy_tested');
+
+package HTTP::ADS::notified;
+use base 'HTTPD::ADS::DBI';
+#HTTPD::ADS::notified->set_up_table('notified');
+__PACKAGE__->table('notified');
+__PACKAGE__->columns(Primary =>'ip');
+__PACKAGE__->columns(All => qw(ip nic_handle_notified notice_ts notice_name));
+
 package HTTPD::ADS::Whitelist;
 #use base 'HTTPD::ADS::DBI';
 #HTTPD::ADS::Whitelist->set_up_table('whitelist');
@@ -180,10 +213,15 @@ package HTTPD::ADS::Whitelist;
     $whitelist{$entry}=1;
   }
   ;
+  {
+		     #whitelist the root name servers of the Internet 
+  my ($name,$aliases, $addrtype, $length,@addrs);
   foreach $entry ('A'..'Z') {
-    $whitelist{gethostbyname("$entry.ROOT-SERVERS.NET")} = 1;
-  }
-  ;		     #whitelist the root name servers of the Internet 
+    ($name,$aliases, $addrtype, $length,@addrs) = gethostbyname("$entry.ROOT-SERVERS.NET");
+    last unless defined $addrs[0];#the root servers are assigned in order w/o gaps
+     $whitelist{sprintf "%vd",$addrs[0]} = 1;
+  }  ;
+}
 
   sub retrieve # Class method! named for compatibility with naming of Class::DBI
     {

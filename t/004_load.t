@@ -4,9 +4,9 @@
 
 use Test::More tests => 2;
 
-BEGIN { use_ok( 'WWW::APS::OpenProxyDetector' ); }
+BEGIN { use_ok( 'HTTPD::ADS::OpenProxyDetector' ); }
 
-my $object = WWW::APS::OpenProxyDetector->new ();
-isa_ok ($object, 'WWW::APS::OpenProxyDetector');
+my $object = HTTPD::ADS::OpenProxyDetector->new ();
+isa_ok ($object, 'HTTPD::ADS::OpenProxyDetector');
 
 

@@ -4,9 +4,9 @@
 
 use Test::More tests => 2;
 
-BEGIN { use_ok( 'WWW::APS::AbuseNotify' ); }
+BEGIN { use_ok( 'HTTPD::ADS::AbuseNotify' ); }
 
-my $object = WWW::APS::AbuseNotify->new ();
-isa_ok ($object, 'WWW::APS::AbuseNotify');
+my $object = HTTPD::ADS::AbuseNotify->new ();
+isa_ok ($object, 'HTTPD::ADS::AbuseNotify');
 
 

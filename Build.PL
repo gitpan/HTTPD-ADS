@@ -18,7 +18,7 @@ Module::Build->new
 	HTTPD::Log::Filter =>'1.07',
 	Compress::Zlib =>'1.22'
 	},
-      script_files =>[ "DefenseServer.pl LogReader.pl"],
+      script_files =>[ "scripts/DefenseServer.pl","scripts/LogReader.pl"],
 create_makefile_pl => 'passthrough',
       sign =>1
     )->create_build_script;
