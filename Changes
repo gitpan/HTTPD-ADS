@@ -14,4 +14,12 @@ Revision history for Perl module WWW::APS
 	identifiers and the maintainer didn't fix his module in 3 months a corrected version of
 	Class::Constructor is included in this distro. 
 	Fixed up the tests to actually work.
-0.5	HTTPD::Log::Filter sometimes sticks on the adjacnet field " -". Add code to ADS.pm to clean this up.
+0.5	HTTPD::Log::Filter sometimes sticks on the adjacent field " -". Add code to ADS.pm to clean this up.
+
+0.6	Performance improvement: move counting of events to the database backend through sql query using
+	aggreate function COUNT(). Speeds look to be at worst 4x faster when there are events to analyze.
+	Time in the database is supposed to be in Zulu (CUT) time. Dates from logfile are in time+tz format,
+	add code to ADS.pm to convert the time to Zulu.
+	New script: LogTailer.pl reads from multiple logfiles, using File::Tail, as input is ready.
+	
+	

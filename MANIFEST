@@ -1,6 +1,5 @@
 Build.PL
 Changes
-lib/Class/Constructor.pm
 lib/HTTPD/ADS.pm
 lib/HTTPD/ADS/AbuseNotify.pm
 lib/HTTPD/ADS/Blocker.pm
@@ -11,7 +10,6 @@ LICENSE
 Makefile.PL
 MANIFEST
 META.yml
-new
 README
 scripts/createdb.sql
 scripts/dbstructure.html

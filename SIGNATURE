@@ -1,5 +1,5 @@
 This file contains message digests of all files listed in MANIFEST,
-signed via the Module::Signature module, version 0.37.
+signed via the Module::Signature module, version 0.38.
 
 To verify the content in this distribution, first make sure you have
 Module::Signature installed, then type:
@@ -14,23 +14,21 @@ not run its Makefile.PL or Build.PL.
 -----BEGIN PGP SIGNED MESSAGE-----
 Hash: SHA1
 
-SHA1 9e9195981eb37d34ad8885edcf434c0be639faa6 Build.PL
-SHA1 2af67c6c29235fdddfde16704e7aeb534f2d087c Changes
+SHA1 40b9985c2ed707aef986dc863ccb46a001f593e6 Build.PL
+SHA1 f06ec681b752f455933cd6cb5368e45b3fec3a51 Changes
 SHA1 c299db91f71478907ac59c6dd41c243fa5f0bfc2 LICENSE
-SHA1 3e29ade42d706675b3dbaced29942a910868c32c MANIFEST
-SHA1 ce1a438e39095c68455d16c20088a3e05acacc1d META.yml
-SHA1 1849b2e69cd3bf568e221f73cf6e91ebae6489c0 Makefile.PL
+SHA1 32c9efb63cd517570ca46c484bcb7966d6370d2b MANIFEST
+SHA1 c2ab8e5a7e81eb448897727dc28cd9d1a8e3a295 META.yml
+SHA1 7e9e2553e95913392d02f7841987ce8b9fb01d1d Makefile.PL
 SHA1 00c94285d8dfc1a3ff3211c57acc29a37457a938 README
 SHA1 0d073dd90358938434d2e9caf8bbacd4a539635b Todo
-SHA1 41cfb61b43ea947a2d8112f24fe86ba163efeb51 lib/Class/Constructor.pm
-SHA1 51c4a61dfbfa164148048de65611ba18b6cb8acf lib/HTTPD/ADS.pm
+SHA1 b0c07ef772277f0f6447bef55b2138948ba6acfb lib/HTTPD/ADS.pm
 SHA1 3e3ac3b381feec68da52ff998f5bf08e6e12e57e lib/HTTPD/ADS/AbuseNotify.pm
 SHA1 2782b52c42fd55c6f170674eb49ab7da6222c0ef lib/HTTPD/ADS/Blocker.pm
-SHA1 b8382cd80e87f25f703d44119941b5117ad53173 lib/HTTPD/ADS/DBI.pm
+SHA1 9257bab930030c2d7c9d82a17422e5a93d5aa2a7 lib/HTTPD/ADS/DBI.pm
 SHA1 6ad78067b0d442e3a86aa0adae74c21f5870a9e9 lib/HTTPD/ADS/OpenProxyDetector.pm
 SHA1 3d37ca5aa27e30fd0b0912714af2a76e8bd70240 lib/HTTPD/ADS/Times.pm
-SHA1 da39a3ee5e6b4b0d3255bfef95601890afd80709 new
-SHA1 5a9ce0e4bad11d28fd2707d0278b77c5bf039af1 scripts/DefenseServer.pl
+SHA1 ef177ba197ea23291a422ee34192adb08b82f27f scripts/DefenseServer.pl
 SHA1 952c8fa4bc7c7d21dc3095a82756f9c79cfdcf00 scripts/EventServer.pl
 SHA1 027a7d82c8e08bfd9b468deb7d7db8b1e702abcf scripts/LogReader.pl
 SHA1 99385e3cb96259d51c99600a5762acc96585fb21 scripts/createdb.sql
@@ -42,7 +40,7 @@ SHA1 a7c3f7ea180e4e20e4f7b71bc10c522a20d38d80 t/005_load.t
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v1.2.2 (GNU/Linux)
 
-iD8DBQE/3/oeTrCJ0LbjxzoRAsA1AKCGigpmjvkSydTzYjTUoRwtErxNuQCgufor
-a70PJUwPYEkvUNTIztOOJKQ=
-=057x
+iD8DBQFAPqvETrCJ0LbjxzoRAsCWAJ43sZzKmxUWYmIo9FN7iQUWTAeH3gCfZwRr
+9wCNhO7fv+4R6xhX35LdWxE=
+=1Vlr
 -----END PGP SIGNATURE-----

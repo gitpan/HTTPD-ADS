@@ -4,7 +4,7 @@ use strict;
 BEGIN {
   use Exporter ();
   use vars qw ($VERSION @ISA @EXPORT @EXPORT_OK %EXPORT_TAGS);
-  $VERSION     = 0.2;
+  $VERSION     = 0.3;
   @ISA         = qw (Exporter);
   #Give a hoot don't pollute, do not export more than needed by default
   @EXPORT      = qw ();
@@ -12,7 +12,7 @@ BEGIN {
   %EXPORT_TAGS = ();
 }
 
-use base qw(Class::DBI::Pg Class::DBI::AbstractSearch);
+use base qw(Class::DBI::Pg );
 # it inherits from Class::DBI
 HTTPD::ADS::DBI->set_db('Main', 'dbi:Pg:dbname=wwwads','','',{AutoCommit =>1});
 
@@ -35,7 +35,7 @@ as a part of the HTTPD::ADS system.
 
 This module contains the objects for the database. Each table is its
 own subclass of HTTPD::ADS::DBI. This module and its classes are built on Class::DBI
-and Class::DBI::AbstractSearch (to provide support for WHERE clauses)
+
 
 
 =head1 USAGE
@@ -81,17 +81,17 @@ perl(1). Class::DBI,Class::DBI::Pg,SQL::AbstractSearch
 
 ################################################ subroutine header begin ##
 
-=head2 sample_function
+=head2 HTTPD::ADS::Hosts
 
  Usage     : How to use this function/method
- Purpose   : What it does
- Returns   : What it returns
- Argument  : What it wants to know
- Throws    : Exceptions and other anomolies
- Comments  : This is a sample subroutine header.
-           : It is polite to include more pod and fewer comments.
+ Purpose   : database table class for hosts 
+ Returns   :class/instances for database table
+ Argument  : column names are methods in this class 
+ Throws    :
+ Comments  : 
+           :
 
-See Also   :
+See Also   : Class::DBI
 
 =cut
 
@@ -173,6 +173,23 @@ package HTTPD::ADS::Eventrecords;
 use base 'HTTPD::ADS::DBI';
 HTTPD::ADS::Eventrecords->set_up_table('eventrecords');
 
+__PACKAGE__->set_sql(count_errors => qq {
+SELECT COUNT(eventid) from eventrecords WHERE (status >= 400 ) AND (ip = ?) AND ( ts >= ?)
+});
+
+sub count_errors {
+  my ($self,@args) = @_;
+#  my $sth = $self->sql_single("COUNT(ip) from eventrecords WHERE (status >=400) AND (ip = ?) AND ( ts >= ?) ");
+#  my $result = $sth->select_val(\@args,['ip','ts']);
+ my $Iterator = $self->search_count_errors(@args);
+my $row = $Iterator->next;
+return $$row{count};
+};
+
+
+__PACKAGE__->set_sql(first_event => qq {
+SELECT id from __TABLE__ WHERE (status >= 400 ) AND (ip = ?) AND ( ts >= ?))
+});
 package HTTPD::ADS::Blacklist;
 use base 'HTTPD::ADS::DBI';
 #HTTPD::ADS::Blacklist->set_up_table('blacklist');
