@@ -1,6 +1,6 @@
 --- #YAML:1.0
 name: HTTPD-ADS
-version: 0.7
+version: 0.8
 author:
   - ~
 abstract: |-
@@ -26,7 +26,7 @@ requires:
 provides:
   HTTPD::ADS:
     file: lib/HTTPD/ADS.pm
-    version: 0.7
+    version: 0.8
   HTTPD::ADS::AbuseNotify:
     file: lib/HTTPD/ADS/AbuseNotify.pm
     version: 0.1

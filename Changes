@@ -15,6 +15,7 @@ Revision history for Perl module WWW::APS
 	Class::Constructor is included in this distro. 
 	Fixed up the tests to actually work.
 0.5	HTTPD::Log::Filter sometimes sticks on the adjacent field " -". Add code to ADS.pm to clean this up.
+	remove Class::Constructor, maintainer fixed it.
 
 0.6	Performance improvement: move counting of events to the database backend through sql query using
 	aggreate function COUNT(). Speeds look to be at worst 4x faster when there are events to analyze.
@@ -22,4 +23,7 @@ Revision history for Perl module WWW::APS
 	add code to ADS.pm to convert the time to Zulu.
 	New script: LogTailer.pl reads from multiple logfiles, using File::Tail, as input is ready.
 	
-	
+0.7	Modify Build.PL to add scripts/LogTailer.pl . search_first_error make sure that we get the first one, add ORDER BY "ts" to the SELECT.
+0.7_1	Oops, forgot to add LIMIT 1 to sql of search_first_error and now we can use an array context
+        confident that we are not wasting resources throwing extra records back to the application.
+         

@@ -170,6 +170,8 @@ sub cached_find_or_create  {
 }
 
 package HTTPD::ADS::Eventrecords;
+ use vars qw ($VERSION);
+ $VERSION = 0.8;
 use base 'HTTPD::ADS::DBI';
 HTTPD::ADS::Eventrecords->set_up_table('eventrecords');
 
@@ -188,9 +190,14 @@ return $$row{count};
 
 
 __PACKAGE__->set_sql(first_error_event => qq {
-SELECT eventid from __TABLE__ WHERE (status >= 400 ) AND (ip = ?) AND ( ts >= ?)ORDER BY ts
+SELECT eventid from __TABLE__ WHERE (status >= 400 ) AND (ip = ?) AND ( ts >= ?)ORDER BY ts LIMIT 1
 });
 
+sub first_error_event {
+  my ($self,$ip,$ts) = @_;
+  my @Rows = $self->search_first_error_event( $ip, $ts );
+  return $Rows[0];
+}
 package HTTPD::ADS::Blacklist;
 use base 'HTTPD::ADS::DBI';
 #HTTPD::ADS::Blacklist->set_up_table('blacklist');
