@@ -2,7 +2,7 @@ package HTTPD::ADS;
 use strict;
 use warnings;
 use vars qw ($VERSION @ISA );
-$VERSION     = 0.1;
+$VERSION     = 0.2;
 use base qw/ Class::Constructor Class::Accessor /;
 use HTTPD::ADS::DBI;
 use CLASS;

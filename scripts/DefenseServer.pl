@@ -2,7 +2,7 @@
 use Errno qw(EAGAIN);
 use IO::Socket::UNIX;
 use Carp;
-use HTTPD::ADS::Blocker;
+use Net::IP::Route::Reject;
 
 my $target_user ="dhudes";
 my $ipv4octetregex = "([0-1]??(1,2)|2[0-4]|25[0-5])";
@@ -32,7 +32,7 @@ while (1) {
 		next;
 	}
   	@ipaddr = grep $ipv4regex, $message; #strip out anything that doesn't belong in an ip addres
-  	HTTPD::ADS::Blocker->new(ip => $ipaddr[0]);
+  	Net::IP::Route::Reject->add( $ipaddr[0]);
  }
 }
 

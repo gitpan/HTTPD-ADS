@@ -18,7 +18,7 @@ BEGIN {
 }
 
 
-our $VERSION = '0.01';
+our $VERSION = '0.02';
 
 #daemon process waits for events to come in, then puts them in database and analyzes and takes action
 
@@ -51,7 +51,7 @@ my $logfilter= HTTPD::Log::Filter->new(
 )]);
 my $linenumber=0;
 my $filename;
-foreach $loopcount ('30'..'86') {
+foreach $loopcount ('33'..'86') {
     $filename = "/var/log/httpd/inside.slavelucy.com-access_log.$loopcount.gz";
     $gz = gzopen($filename, "rb") || die "could not open log file";
  print "$linenumber lines\n";
@@ -79,7 +79,7 @@ foreach $loopcount ('30'..'86') {
 				   request => $logfilter->request,
 				   status =>$logfilter->status,
 				   referer =>$logfilter->referer,
-				   user =>$logfilter->ident,
+				   user =>$logfilter->authexclude,
 				   time =>$logfilter->date
 				  );
 	print "$linenumber completed\r";

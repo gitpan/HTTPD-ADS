@@ -3,4 +3,9 @@ Revision history for Perl module WWW::APS
 0.1 Thu Oct  2 11:09:05 2003
 	- original version; created by ExtUtils::ModuleMaker 0.32
 
+0.2 Monday Oct 27 23:16 2003
+	- Still some bugs but less. DefenseServer.pl now uses Net::IP::Route::Reject .
+	- squaashed bug in LogReader.pl with regards to interface to HTTPD::Log::Filter
+	- sockets approach to separating root/non-root is fragile. Considering rewrite
+	- to make one program which runs as root , uses unnamed pipe and then forks.
 

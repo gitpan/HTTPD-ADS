@@ -1,6 +1,6 @@
 --- #YAML:1.0
 name: HTTPD-ADS
-version: 0.1
+version: 0.2
 license: gpl
 distribution_type: module
 requires:
@@ -15,14 +15,14 @@ requires:
   Date::Calc: 5.3
   HTTPD::Log::Filter: 1.07
   IO::Socket::UNIX: 1.20
-  Net::IP::Route::Reject: 0
+  Net::IP::Route::Reject: 0.3
 recommends: {}
 build_requires: {}
 conflicts: {}
 provides:
   HTTPD::ADS:
     file: lib/HTTPD/ADS.pm
-    version: 0.1
+    version: 0.2
   HTTPD::ADS::AbuseNotify:
     file: lib/HTTPD/ADS/AbuseNotify.pm
     version: 0.1
