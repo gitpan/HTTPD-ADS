@@ -1,11 +1,12 @@
 
 package HTTPD::ADS::OpenProxyDetector;
 use strict;
+use LWP::UserAgent;
 
 BEGIN {
 	use Exporter ();
 	use vars qw ($VERSION @ISA @EXPORT @EXPORT_OK %EXPORT_TAGS);
-	$VERSION     = 0.1;
+	$VERSION     = 0.2;
 	@ISA         = qw (Exporter);
 	#Give a hoot don't pollute, do not export more than needed by default
 	@EXPORT      = qw ();
@@ -25,19 +26,20 @@ HTTPD::ADS::OpenProxyDetector - Determine if a ip address is an open proxy, log 
 =head1 SYNOPSIS
 
   use HTTPD::ADS::OpenProxyDetector
-  blah blah blah
+
 
 
 =head1 DESCRIPTION
 
-Stub documentation for this module was created by ExtUtils::ModuleMaker.
-It looks like the author of the extension was negligent enough
-to leave the stub unedited.
-
-Blah blah blah.
+This module uses LWP to test the supplied IP address to see if it will
+promiscuosly proxy on port 80. Caution: this can have false alarms if
+you are on a network where you are supposed to go through a proxy,
+such as AOL -- but are you supposed to be running a webserver on such
+a network ?
 
 
 =head1 USAGE
+$test_result = HTTPD::ADS::OpenProxyDetector->test($ip);
 
 
 
@@ -69,7 +71,7 @@ LICENSE file included with this module.
 
 =head1 SEE ALSO
 
-perl(1).
+HTTPD::ADS, LWP, perl(1).
 
 =cut
 
@@ -78,17 +80,17 @@ perl(1).
 
 ################################################ subroutine header begin ##
 
-=head2 sample_function
+=head2 test
 
- Usage     : How to use this function/method
- Purpose   : What it does
- Returns   : What it returns
- Argument  : What it wants to know
- Throws    : Exceptions and other anomolies
- Comments  : This is a sample subroutine header.
-           : It is polite to include more pod and fewer comments.
+ Usage     : test($ip)
+ Purpose   : tries to fetch a known web page via the supplied ip as proxy.
+ Returns   : true (proxy fetch successful) or false (it failed to fetch)
+ Argument  : IPv4
+ Throws    : We should probably throw an exception if the ip address under test is unreachable
+ Comments  : Not all open proxies or compromised hosts listen on port 80 and their are other means 
+             than straightforward HTTP to communicate with zombies but this is a start.
 
-See Also   : 
+See Also   : HTTPD::ADS::AbuseNotify for sending complaints about validated proxies and other abuse.
 
 =cut
 
@@ -97,13 +99,43 @@ See Also   :
 
 sub new
 {
-	my ($class, %parameters) = @_;
+	my ($class, $ip) = @_;
 
 	my $self = bless ({}, ref ($class) || $class);
-
+	$self->test($ip);
 	return ($self);
 }
 
+{
+    my $response;
+sub get_response {
+    return $response;
+}
+sub _set_response {
+    my ($self,$param) = @_;
+    $response = $param || die "OpenPrexyDetector - no response to store";
+}
+}
+sub  test {
+    my $self = shift;
+    my $ip = shift ||  die "no ip address supplied to test";
+    my $browser = LWP::UserAgent->new(timeout =>10, max_size =>2048, requests_redirectable => []);#fixme -- come back later and stuff in a fake agent name
+	$browser->proxy("http","http://$ip");
+    my $response =  $browser->head("http://www.hudes.org/");
+    $self->_set_response($response);
+    return $response->code();
+}
+
+sub guilty {
+    my $self = shift;
+#we should get an error if its not an open proxy; informational etc. is not the right thing....
+    return ! ( ($self->get_response)->is_error);
+}
+
+sub code {
+    my $self = shift;
+    return ($self->get_response)->code();
+}
 
 1; #this line is important and will help the module return a true value
 __END__

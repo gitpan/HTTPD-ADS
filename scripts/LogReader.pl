@@ -51,8 +51,10 @@ my $logfilter= HTTPD::Log::Filter->new(
 )]);
 my $linenumber=0;
 my $filename;
-foreach $loopcount ('33'..'86') {
-    $filename = "/var/log/httpd/inside.slavelucy.com-access_log.$loopcount.gz";
+#foreach $loopcount ('33'..'86') {
+#    $filename = "/var/log/httpd/inside.slavelucy.com-access_log.$loopcount.gz";
+foreach $loopcount ('1'..'5') {
+    $filename = "/var/log/httpd/www.maturebelles.com-access_log.$loopcount".($loopcount > 1?".gz":"");
     $gz = gzopen($filename, "rb") || die "could not open log file";
  print "$linenumber lines\n";
     print "process $filename\n ";
@@ -70,7 +72,7 @@ foreach $loopcount ('33'..'86') {
 	# One may think access to protected page w/o specifying username is innocent. Maybe. but it could
 	# be that someone trys and then failing to get in launches a brute force attack. So while blank
 	# username on its own might be innocent it could be counted with failed login attempts
-	# as grounds for killing some asshole
+	# as grounds for "termination with extreme prejuidice" of some hacker
 	# or blackholing his ip anyway. But you need data on which to make a decision.
 	next unless ($logfilter->status >= 400 && $logfilter->status < 500);
 	$apacheids->event_recorder(

@@ -2,10 +2,10 @@ package HTTPD::ADS;
 use strict;
 use warnings;
 use vars qw ($VERSION @ISA );
-$VERSION     = 0.31;
+$VERSION     = 0.4;
 use base qw/ Class::Constructor Class::Accessor /;
 use HTTPD::ADS::DBI;
-use HTTPD::ADS::Times;#time-related subroutines
+use HTTPD::ADS::Times;		#time-related subroutines
 use CLASS;
 use CGI::Carp qw(cluck  carpout);
 use IO::Socket::UNIX;
@@ -14,11 +14,11 @@ use IO::Socket::UNIX;
 use constant MAX_REQUEST_STRING_LENGTH =>64;
 use constant MAX_REQUEST_STRING_COLUMN => 63;
 BEGIN {
-    #this is supposed to have been done by use base...
-    use vars qw ( @ISA);
-    require Class::Accessor;
-    require Class::Constructor;
-    push @ISA, 'Class::Accessor','Class::Constructor';
+  #this is supposed to have been done by use base...
+  use vars qw ( @ISA);
+  require Class::Accessor;
+  require Class::Constructor;
+  push @ISA, 'Class::Accessor','Class::Constructor';
 }
 ########################################### main pod documentation begin ##
 # Below is the documentation for this module.
@@ -110,98 +110,117 @@ CLASS->mk_constructor(
 =cut
 
 ################################################## subroutine header end ##
-
+use Date::Calc qw(Normalize_DHMS);
 sub _init {
-    #_init sets up the db connection and prepares the SQL we'll need for insert and retrieve
-    my $self = shift;
+  #_init sets up the db connection and prepares the SQL we'll need for insert and retrieve
+  my $self = shift;
 
 
-    $self->IDSTimeWindowSize(defined $self->IDSTimeWindowSize? -$self->IDSTimeWindowSize: -300);
-    $self->IDSEventsThresholdLevel(10) unless defined $self->IDSEventsThresholdLevel;
-    $self->normalizedIDSTimeWindowSize( \[0,0,Normalize_DHMS(0,0,0,$self->IDSTimeWindowSize)] );
+  $self->IDSTimeWindowSize(defined $self->IDSTimeWindowSize? -$self->IDSTimeWindowSize: -300);
+  $self->IDSEventsThresholdLevel(10) unless defined $self->IDSEventsThresholdLevel;
+  $self->normalizedIDSTimeWindowSize( \[0,0,Normalize_DHMS(0,0,0,$self->IDSTimeWindowSize)] );
 
 
 }
-    #we need a whitelist. I think check it before recording events i.e. refuse to store
-    #events about whitelisted hosts
-    sub event_recorder {
-	# put the status, ip address and time into database. If time isn't supplied, use the postgresql now() function
-	#If the status is 401, see if we should blacklist this ip address
-	my $self=shift;
-	my %args=@_;
-	my ($eventrecord,$hostentry,$arg_string,$username,$request_string,$whitelist_entry);
-	my $max_request_length=64; #not max column number, which is one less 
+
+use Switch;
+use HTTPD::ADS::AbuseNotify;
+sub event_recorder {
+    # put the status, ip address and time into database. If time isn't supplied, use the postgresql now() function
+    #If the status is 401, see if we should blacklist this ip address unless it is whitelisted
+    my $self=shift;
+    my %args=@_;
+    my ($eventrecord,$hostentry,$arg_string,$username,$request_string,$whitelist_entry);
+    my $max_request_length=64; #not max column number, which is one less 
 
 
 
-	$args{time}=$self->gmttimestamp unless defined $args{time};
-	confess "no ip address supplied" unless defined $args{ip};
-	confess "no status supplied" unless defined $args{status};
-	$whitelist_entry = HTTPD::ADS::Whitelist->retrieve($args{ip});
-	if (!$whitelist_entry) {
-	    substr($args{request},MAX_REQUEST_STRING_COLUMN)='' if ((length $args{request})  > MAX_REQUEST_STRING_LENGTH); #a clever way to trim to maximum length	
-	    $hostentry= HTTPD::ADS::Hosts->find_or_create(ip => $args{ip});
-	    #      $arg_string = '-' unless (defined $args{arg_string});
-	    #     $arg_string = HTTPD::ADS::Arg_strings->find_or_create({arg_string => $args{arg_string}});
+    $args{time}=$self->gmttimestamp unless defined $args{time};
+    confess "no ip address supplied" unless defined $args{ip};
+    confess "no status supplied" unless defined $args{status};
+    $whitelist_entry = HTTPD::ADS::Whitelist->retrieve($args{ip});
+    if (!$whitelist_entry) {
+      substr($args{request},MAX_REQUEST_STRING_COLUMN)='' if ((length $args{request})  > MAX_REQUEST_STRING_LENGTH); #a clever way to trim to maximum length	
+      $hostentry= HTTPD::ADS::Hosts->find_or_create(ip => $args{ip});
+      #      $arg_string = '-' unless (defined $args{arg_string});
+      #     $arg_string = HTTPD::ADS::Arg_strings->find_or_create({arg_string => $args{arg_string}});
 
-	    $request_string = HTTPD::ADS::Request_strings->cached_find_or_create({request_string =>$args{request}});
-	    $username = HTTPD::ADS::Usernames->cached_find_or_create({username => $args{user}});
-	    $eventrecord = HTTPD::ADS::Eventrecords->create(
-							    {
-							     ts =>$args{time},
-							     ip=> $args{ip},
-							     status => $args{status},
-							     userid => $username->userid,
-							     requestid => $request_string->requestid,
-							     #					     argid => $arg_string->argid
+      $request_string = HTTPD::ADS::Request_strings->cached_find_or_create({request_string =>$args{request}});
+      $username = HTTPD::ADS::Usernames->cached_find_or_create({username => $args{user}});
+      $eventrecord = HTTPD::ADS::Eventrecords->create(
+						      {
+						       ts =>$args{time},
+						       ip=> $args{ip},
+						       status => $args{status},
+						       userid => $username->userid,
+						       requestid => $request_string->requestid,
+						       #					     argid => $arg_string->argid
 
-							    }
-							   );
-
-	    $self->analyze401(\%args) if($args{status}== 401);
-	} else {
-	    use Sys::Syslog;
-	    my $program = $ARGV[0];
-	    openlog("$program $$",'pid','local6');
-	    syslog('warning',"%s event received for whitelisted host %s",$args{status},$args{ip});
-	    closelog;
-	}
+						      }
+						     );
+      switch ($args{status}) {
+      case 401 {$self->analyze401(\%args);}
     }
+    } else {
+      use Sys::Syslog;
+      my $program = $ARGV[0];
+      openlog("$program $$",'pid','local6');
+      syslog('warning',"%s event received for whitelisted host %s",$args{status},$args{ip});
+      closelog;
+    }
+  }
+use HTTPD::ADS::OpenProxyDetector;
 
 sub analyze401 {
-    my ($self,$args) = @_;
-    #Class::DBI::AbstractSearch format which is to say SQL::AbstractSearch  WHERE clause
-    my @events;
-    my $eventcount;
-    @events=HTTPD::ADS::Eventrecords->search_where( 
-						   {
-						    ip => $$args{ip}, #=
-						    ts =>{'>=',$self->pgtimewindow}},
-						   {
-						    order =>'ts'}
-						  );
-    $eventcount = $#events + 1;
-    $self->blacklist(
-		     ip=>$$args{ip}, first_event => $events[0]->get('eventid'),block_reason => 401 
-		    )
-	if ($eventcount >= $self->IDSEventsThresholdLevel);
-  
+  my ($self,$args) = @_;
+  #Class::DBI::AbstractSearch format which is to say SQL::AbstractSearch  WHERE clause
+  my @events;
+  my $eventcount;
+  my $open_proxy_test;
+  my $proxyrecord;
+  my $ip =  $$args{ip};
+  @events=HTTPD::ADS::Eventrecords->search_where( 
+						 {
+						  ip =>$ip, #=
+						  ts =>{'>=',$self->pgtimewindow},
+						  status =>{'>',400}
+						 } ,
+						 {
+						  order =>'ts'}
+						);
+  $eventcount = $#events + 1;
+  if($eventcount >3){
+    my $notify;
+    $proxyrecord = HTTPD::ADS::proxy_tested->find_or_create(ip =>$ip);
+    unless ($proxyrecord->open_proxy eq 't' || $proxyrecord->open_proxy_tested_at ){#come back later, think about a time window for retesting...
+      
+    $open_proxy_test = HTTPD::ADS::OpenProxyDetector->new($ip);
+    print "proxy test for $ip returns ".$open_proxy_test->code."\n";
+    $proxyrecord->set(open_proxy =>($open_proxy_test->guilty? 't':'f'), open_proxy_tested_at => gmttimestamp);
+    $proxyrecord->update;
+    $notify = HTTPD::ADS::AbuseNotify->new(ip => $ip,type =>'PROXY') if $open_proxy_test->guilty;
+  }
+  $self->blacklist(
+		   ip=>$$args{ip}, first_event => $events[0]->get('eventid'),block_reason => 401 
+		  )
+    if ($eventcount >= $self->IDSEventsThresholdLevel || $proxyrecord->open_proxy eq 't');
+  }
 }
 {
-    my %blocked_list;
-    sub blacklist {
-	my ($self,%args) = @_;
-	unless ($blocked_list{$args{ip}}++ > 0) {
-	    my $fifo = "/tmp/BlackList";
-	    my $Blacklisted;
-	    die "socket file $fifo present and I can't write to it" unless(-w $fifo) ;
-	    my $sock = IO::Socket::UNIX->new(Peer => $fifo) or confess "$!";
-	    $sock->print($args{ip}); #we use line-oriented i/o, its simpler...
-	    $args{active}=  'true'; #true...
-	    $args{blocked_at}=$self->gmttimestamp;	
-	    $Blacklisted = HTTPD::ADS::Blacklist->create(\%args) ;
-	}
+  my %blocked_list;
+  sub blacklist {
+    my ($self,%args) = @_;
+    unless ($blocked_list{$args{ip}}++ > 0) {
+      my $fifo = "/tmp/BlackList";
+      my $Blacklisted;
+      die "socket file $fifo present and I can't write to it" unless(-w $fifo) ;
+      my $sock = IO::Socket::UNIX->new(Peer => $fifo) or confess "$!";
+      $sock->print($args{ip}); #we use line-oriented i/o, its simpler...
+      $args{active}=  'true';	#true...
+      $args{blocked_at}=$self->gmttimestamp;	
+      $Blacklisted = HTTPD::ADS::Blacklist->create(\%args) ;
     }
+  }
 }
 
 

@@ -109,15 +109,15 @@ __PACKAGE__->columns(All => qw(ip score score_ts));
 
 package HTTPD::ADS::Usernames;
 use base 'HTTPD::ADS::DBI';
-#HTTPD::ADS::Usernames->set_up_table('usernames');
+HTTPD::ADS::Usernames->set_up_table('usernames');
 use CLASS;
 use Carp;
 my %usernames_cache;
 
-CLASS->table('usernames');
-CLASS->columns(Primary =>'userid');
-CLASS->columns(All => qw (userid username));
-CLASS->sequence('userid');
+#CLASS->table('usernames');
+#CLASS->columns(Primary =>'userid');
+#CLASS->columns(All => qw (userid username));
+#CLASS->sequence('userid');
 
 sub cached_find_or_create {
   my $self = shift;
@@ -140,15 +140,15 @@ sub cached_find_or_create {
 
 package HTTPD::ADS::Request_strings;
 use base 'HTTPD::ADS::DBI';
-#HTTPD::ADS::Request_strings->set_up_table('request_strings');
+HTTPD::ADS::Request_strings->set_up_table('request_strings');
 use CLASS;
 use Carp;
 my %request_strings_cache;
 
-CLASS->table('request_strings');
-CLASS->columns(Primary => 'requestid');
-CLASS->columns(All =>qw (requestid request_string));
-CLASS->sequence('requestid');
+#CLASS->table('request_strings');
+#CLASS->columns(Primary => 'requestid');
+#CLASS->columns(All =>qw (requestid request_string));
+#CLASS->sequence('requestid');
 
 
 sub cached_find_or_create  {
