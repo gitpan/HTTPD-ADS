@@ -1,0 +1,42 @@
+This file contains message digests of all files listed in MANIFEST,
+signed via the Module::Signature module, version 0.35.
+
+To verify the content in this distribution, first make sure you have
+Module::Signature installed, then type:
+
+    % cpansign -v
+
+It would check each file's integrity, as well as the signature's
+validity.  If "==> Signature verified OK! <==" is not displayed,
+the distribution may already have been compromised, and you should
+not run its Makefile.PL or Build.PL.
+
+-----BEGIN PGP SIGNED MESSAGE-----
+Hash: SHA1
+
+SHA1 62d9b9ec8f5e400bfb7f3bb8d5c078f97d50e8db Build.PL
+SHA1 cb98dfe169451fd2a533c2b3e184345c9e7c7993 Changes
+SHA1 c299db91f71478907ac59c6dd41c243fa5f0bfc2 LICENSE
+SHA1 a64f312259e773b151bb0a0ce8d500239ade6ada MANIFEST
+SHA1 f61c7f26ad1fb418775433d7d3ba476587811bbf META.yml
+SHA1 00c94285d8dfc1a3ff3211c57acc29a37457a938 README
+SHA1 0d073dd90358938434d2e9caf8bbacd4a539635b Todo
+SHA1 e970095e2caf748284037fb7cc94ec99043689a5 lib/HTTPD/ADS.pm
+SHA1 3e3ac3b381feec68da52ff998f5bf08e6e12e57e lib/HTTPD/ADS/AbuseNotify.pm
+SHA1 80d356c2a0106f12fc286f3bd6bc769d2a84419d lib/HTTPD/ADS/DBI.pm
+SHA1 aef839a097819d22b70d3b34d152a70e61fc1032 lib/HTTPD/ADS/OpenProxyDetector.pm
+SHA1 1b0208dfd6a273435304c2a8f69ac6a3af1e176b scripts/DefenseServer.pl
+SHA1 6bd6ca2dc3739bcdce979eabb74c93b00a88054e scripts/LogReader.pl
+SHA1 d86c880dccf7270d4fa701b4e844186084c4b388 scripts/createdb.sql
+SHA1 8429fc638f9e5610ad3f4715586a7348111f479a t/001_load.t
+SHA1 8f7adbdd5570fac85dc5c2254c9be7bd68addcf5 t/003_load.t
+SHA1 880eee4dc86b10505a4de00ae82b8ab13eb9090a t/004_load.t
+SHA1 e75e96d7d72e85af408821d31096352b179e8b54 t/005_load.t
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.0.6 (GNU/Linux)
+Comment: For info see http://www.gnupg.org
+
+iD8DBQE/m1M4TrCJ0LbjxzoRAlyIAKDINpGtFa+h73C7TuGtt47oGo8sXwCgq5mG
+MFJHIokiGa3hj+FVHVOa3l0=
+=jdYS
+-----END PGP SIGNATURE-----

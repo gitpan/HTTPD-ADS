@@ -1,0 +1,20 @@
+MANIFEST
+LICENSE
+README
+Todo
+Changes
+lib/HTTPD/ADS.pm
+t/001_load.t
+lib/HTTPD/ADS/DBI.pm
+t/003_load.t
+lib/HTTPD/ADS/OpenProxyDetector.pm
+t/004_load.t
+lib/HTTPD/ADS/AbuseNotify.pm
+t/005_load.t
+Build.PL
+scripts/createdb.sql
+scripts/DefenseServer.pl
+scripts/LogReader.pl
+META.yml
+
+SIGNATURE    Added here by Module::Build
