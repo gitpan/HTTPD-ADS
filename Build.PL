@@ -22,7 +22,7 @@ Module::Build->new
 	DBD::Pg => '1.31',
 	HTTP::Date =>'1.46'
 	},
-      script_files =>[ "scripts/DefenseServer.pl","scripts/LogReader.pl"],
+      script_files =>[ "scripts/DefenseServer.pl","scripts/LogReader.pl","scripts/LogTailer.pl"],
 create_makefile_pl => 'passthrough',
       sign =>1
     )->create_build_script;

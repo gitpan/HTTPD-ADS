@@ -2,7 +2,7 @@ package HTTPD::ADS;
 use strict;
 use warnings;
 use vars qw ($VERSION @ISA );
-$VERSION     = 0.6;
+$VERSION     = 0.7;
 use base qw/ Class::Constructor Class::Accessor /;
 use HTTPD::ADS::DBI;
 use HTTPD::ADS::Times;		#time-related subroutines
@@ -241,8 +241,8 @@ sub analyze401 {
 sub first_eventid {
   my $self = shift @_;
   my $ip = shift @_;
-  my $events=HTTPD::ADS::Eventrecords->search_first_event( $ip, $self->pgtimewindow );
-  my $eventid = $events->eventid;
+  my $event=HTTPD::ADS::Eventrecords->search_first_error_event( $ip, $self->pgtimewindow )[0];
+  my $eventid = $event->eventid;
   return $eventid;
 }
 

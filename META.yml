@@ -1,6 +1,6 @@
 --- #YAML:1.0
 name: HTTPD-ADS
-version: 0.6
+version: 0.7
 author:
   - ~
 abstract: |-
@@ -26,47 +26,47 @@ requires:
 provides:
   HTTPD::ADS:
     file: lib/HTTPD/ADS.pm
-    version: 0.6
+    version: 0.7
   HTTPD::ADS::AbuseNotify:
     file: lib/HTTPD/ADS/AbuseNotify.pm
     version: 0.1
   HTTPD::ADS::Blacklist:
     file: lib/HTTPD/ADS/DBI.pm
-    version: 0.3
+    version: 0.6
   HTTPD::ADS::Blocker:
     file: lib/HTTPD/ADS/Blocker.pm
     version: 0.1
   HTTPD::ADS::DBI:
     file: lib/HTTPD/ADS/DBI.pm
-    version: 0.3
+    version: 0.6
   HTTPD::ADS::Eventrecords:
     file: lib/HTTPD/ADS/DBI.pm
-    version: 0.3
+    version: 0.6
   HTTPD::ADS::Hosts:
     file: lib/HTTPD/ADS/DBI.pm
-    version: 0.3
+    version: 0.6
   HTTPD::ADS::OpenProxyDetector:
     file: lib/HTTPD/ADS/OpenProxyDetector.pm
     version: 0.2
   HTTPD::ADS::Request_strings:
     file: lib/HTTPD/ADS/DBI.pm
-    version: 0.3
+    version: 0.6
   HTTPD::ADS::Times:
     file: lib/HTTPD/ADS/Times.pm
     version: 0.1
   HTTPD::ADS::Usernames:
     file: lib/HTTPD/ADS/DBI.pm
-    version: 0.3
+    version: 0.6
   HTTPD::ADS::Whitelist:
     file: lib/HTTPD/ADS/DBI.pm
-    version: 0.3
+    version: 0.6
   HTTPD::ADS::notice_templates:
     file: lib/HTTPD/ADS/DBI.pm
-    version: 0.3
+    version: 0.6
   HTTPD::ADS::notified:
     file: lib/HTTPD/ADS/DBI.pm
-    version: 0.3
+    version: 0.6
   HTTPD::ADS::proxy_tested:
     file: lib/HTTPD/ADS/DBI.pm
-    version: 0.3
+    version: 0.6
 generated_by: Module::Build version 0.24

@@ -4,7 +4,7 @@ use strict;
 BEGIN {
   use Exporter ();
   use vars qw ($VERSION @ISA @EXPORT @EXPORT_OK %EXPORT_TAGS);
-  $VERSION     = 0.3;
+  $VERSION     = 0.6;
   @ISA         = qw (Exporter);
   #Give a hoot don't pollute, do not export more than needed by default
   @EXPORT      = qw ();
@@ -187,9 +187,10 @@ return $$row{count};
 };
 
 
-__PACKAGE__->set_sql(first_event => qq {
-SELECT id from __TABLE__ WHERE (status >= 400 ) AND (ip = ?) AND ( ts >= ?))
+__PACKAGE__->set_sql(first_error_event => qq {
+SELECT eventid from __TABLE__ WHERE (status >= 400 ) AND (ip = ?) AND ( ts >= ?)ORDER BY ts
 });
+
 package HTTPD::ADS::Blacklist;
 use base 'HTTPD::ADS::DBI';
 #HTTPD::ADS::Blacklist->set_up_table('blacklist');
