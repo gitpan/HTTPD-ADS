@@ -14,3 +14,4 @@ Revision history for Perl module WWW::APS
 	identifiers and the maintainer didn't fix his module in 3 months a corrected version of
 	Class::Constructor is included in this distro. 
 	Fixed up the tests to actually work.
+0.5	HTTPD::Log::Filter sometimes sticks on the adjacnet field " -". Add code to ADS.pm to clean this up.

@@ -2,7 +2,7 @@ package HTTPD::ADS;
 use strict;
 use warnings;
 use vars qw ($VERSION @ISA );
-$VERSION     = 0.4;
+$VERSION     = 0.5;
 use base qw/ Class::Constructor Class::Accessor /;
 use HTTPD::ADS::DBI;
 use HTTPD::ADS::Times;		#time-related subroutines
@@ -13,6 +13,7 @@ use IO::Socket::UNIX;
 
 use constant MAX_REQUEST_STRING_LENGTH =>64;
 use constant MAX_REQUEST_STRING_COLUMN => 63;
+
 BEGIN {
   #this is supposed to have been done by use base...
   use vars qw ( @ISA);
@@ -133,15 +134,18 @@ sub event_recorder {
     my ($eventrecord,$hostentry,$arg_string,$username,$request_string,$whitelist_entry);
     my $max_request_length=64; #not max column number, which is one less 
 
-
+   
 
     $args{time}=$self->gmttimestamp unless defined $args{time};
-    confess "no ip address supplied" unless defined $args{ip};
+    my $ip = $args{ip} || confess "no ip address supplied";
     confess "no status supplied" unless defined $args{status};
-    $whitelist_entry = HTTPD::ADS::Whitelist->retrieve($args{ip});
+    my @ipaddr = split /\s+/,$ip,2; #sometimes another field gets stuck on, get rid of it.;
+    $ip = $ipaddr[0];
+    $args{ip}=$ip;
+    $whitelist_entry = HTTPD::ADS::Whitelist->retrieve($ip);
     if (!$whitelist_entry) {
       substr($args{request},MAX_REQUEST_STRING_COLUMN)='' if ((length $args{request})  > MAX_REQUEST_STRING_LENGTH); #a clever way to trim to maximum length	
-      $hostentry= HTTPD::ADS::Hosts->find_or_create(ip => $args{ip});
+      $hostentry= HTTPD::ADS::Hosts->find_or_create(ip => $ip);
       #      $arg_string = '-' unless (defined $args{arg_string});
       #     $arg_string = HTTPD::ADS::Arg_strings->find_or_create({arg_string => $args{arg_string}});
 
@@ -150,7 +154,7 @@ sub event_recorder {
       $eventrecord = HTTPD::ADS::Eventrecords->create(
 						      {
 						       ts =>$args{time},
-						       ip=> $args{ip},
+						       ip=> $ip,
 						       status => $args{status},
 						       userid => $username->userid,
 						       requestid => $request_string->requestid,
@@ -196,7 +200,7 @@ sub analyze401 {
       
     $open_proxy_test = HTTPD::ADS::OpenProxyDetector->new($ip);
     print "proxy test for $ip returns ".$open_proxy_test->code."\n";
-    $proxyrecord->set(open_proxy =>($open_proxy_test->guilty? 't':'f'), open_proxy_tested_at => gmttimestamp);
+    $proxyrecord->set(open_proxy =>($open_proxy_test->guilty? 't':'f'), open_proxy_tested_at => gmttimestamp, proxy_test_result => $open_proxy_test-> code);
     $proxyrecord->update;
     $notify = HTTPD::ADS::AbuseNotify->new(ip => $ip,type =>'PROXY') if $open_proxy_test->guilty;
   }

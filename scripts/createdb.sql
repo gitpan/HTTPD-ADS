@@ -15,7 +15,7 @@ notice_templates(notice_name), foreign key (ip) references hosts(ip)  );
 
 create table proxy_tested(ip inet not null  primary key,
 open_proxy boolean default 'f'::bool, open_proxy_tested_at timestamp
-default null, foreign key (ip) references hosts(ip) );
+default null, proxy_test_result int2, foreign key (ip) references hosts(ip) );
 
 create table eventrecords (eventid serial primary key,ts timestamp
 default now(), status int2 not null, userid int4, ip inet not null, requestid
